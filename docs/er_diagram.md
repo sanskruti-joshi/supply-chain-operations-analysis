@@ -2,68 +2,106 @@
 
 ## Purpose and Status
 
-This is a proposed logical model for analysis of the DataCo Smart Supply Chain dataset. It is not yet an implemented or fully validated database schema. Entity names are simplified and may differ from the final PostgreSQL names.
+This diagram represents the implemented normalized PostgreSQL schema in
+`sql/05_schema_and_constraints.sql`. It contains only the six implemented
+entities: category, department, customer, product, customer_order, and
+order_item.
 
-## Proposed Model
+## Implemented Model
 
 ```mermaid
 erDiagram
-    CUSTOMER ||--o{ CUSTOMER_ORDER : places
-    CUSTOMER_ORDER ||--|{ ORDER_ITEM : contains
-    PRODUCT ||--o{ ORDER_ITEM : appears_in
     CATEGORY ||--o{ PRODUCT : classifies
     DEPARTMENT ||--o{ PRODUCT : groups
-
-    CUSTOMER {
-        int customer_id PK
-    }
-
-    CUSTOMER_ORDER {
-        int order_id PK
-        int customer_id FK
-        timestamp order_date
-        string order_status
-        string market
-        string shipping_mode
-    }
-
-    ORDER_ITEM {
-        int order_item_id PK
-        int order_id FK
-        int product_id FK
-        int quantity
-        numeric sales
-        numeric discount
-        string delivery_status
-        int late_delivery_risk
-    }
-
-    PRODUCT {
-        int product_id PK
-        int category_id FK
-        int department_id FK
-        string product_name
-        numeric product_price
-        int product_status
-    }
+    CUSTOMER ||--o{ CUSTOMER_ORDER : places
+    CUSTOMER_ORDER ||--o{ ORDER_ITEM : contains
+    PRODUCT ||--o{ ORDER_ITEM : appears_in
 
     CATEGORY {
-        int category_id PK
-        string category_name
+        integer category_id PK
+        varchar(50) category_name
     }
 
     DEPARTMENT {
-        int department_id PK
-        string department_name
+        integer department_id PK
+        varchar(100) department_name
+    }
+
+    CUSTOMER {
+        integer customer_id PK
+        text first_name
+        text last_name
+        text email
+        text customer_segment
+    }
+
+    PRODUCT {
+        integer product_id PK
+        integer category_id FK
+        integer department_id FK
+        text product_name
+        text description
+        text image_url
+        numeric(18,9) product_price
+        smallint product_status
+    }
+
+    CUSTOMER_ORDER {
+        integer order_id PK
+        integer customer_id FK
+        text transaction_type
+        timestamp order_date
+        timestamp shipping_date
+        text order_status
+        text shipping_mode
+        integer actual_shipping_days
+        integer scheduled_shipping_days
+        text delivery_status
+        smallint late_delivery_risk
+        text market
+        text destination_city
+        text destination_state
+        text destination_country
+        text destination_postal_code
+        varchar(32) destination_region
+    }
+
+    ORDER_ITEM {
+        integer order_item_id PK
+        integer order_id FK
+        integer product_id FK
+        numeric(18,9) discount_amount
+        numeric(11,9) discount_rate
+        numeric(18,9) unit_product_price
+        numeric(11,9) profit_ratio
+        integer quantity
+        numeric(18,9) sales_amount
+        numeric(18,9) order_item_total
     }
 ```
 
-## Modeling Notes
+## Relationship Cardinalities
 
-- The source is denormalized and currently loaded into a text-based staging table; the entities and keys above are proposed.
-- The source contains two product identifiers (`Product Card Id` and `Order Item Cardprod Id`). The checks recorded to date found them aligned, but the final foreign-key source must be chosen explicitly.
-- `Order Profit Per Order` and `Benefit per order` are identical in the inspected CSV, but both vary within many orders. Their business meaning and economic grain are unresolved; neither is included in the proposed entities until that is settled.
-- Do not infer a profit aggregation rule from the source column names or their row-level values. Any profit measure and its grain must be validated before it is added to the schema or used in metrics.
-- The model and cardinalities remain subject to primary-key, foreign-key, and business-rule validation before implementation.
+- One category may classify zero or more products.
+- One department may group zero or more products.
+- One customer may place zero or more customer orders.
+- One customer order may have zero or more order items in the schema; the
+  source migration supplied items for the represented orders.
+- One product may appear on zero or more order items.
 
-See [findings_report.md](./findings_report.md) for the current validation evidence and [assumptions_and_limitations.md](./assumptions_and_limitations.md) for outstanding modeling caveats.
+The foreign-key relationships are:
+
+- `product.category_id -> category.category_id`
+- `product.department_id -> department.department_id`
+- `customer_order.customer_id -> customer.customer_id`
+- `order_item.order_id -> customer_order.order_id`
+- `order_item.product_id -> product.product_id`
+
+The migration verified source distinct identifiers against the destination
+entity counts and validated foreign-key relationships. Unresolved profit fields,
+customer geography fields, `Customer Password`, and coordinates remain outside
+the implemented schema.
+
+See [findings_report.md](./findings_report.md) for migration results and
+[assumptions_and_limitations.md](./assumptions_and_limitations.md) for remaining
+caveats.

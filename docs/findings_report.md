@@ -2,9 +2,44 @@
 
 ## Status
 
-This report records the results documented from initial profiling and data-quality checks on the DataCo Smart Supply Chain dataset. The source CSV has 180,519 data rows and 53 columns. These findings describe the current staging data; they are not claims about a broader population.
+This report records results from initial profiling and data-quality checks on
+the DataCo Smart Supply Chain dataset. The source CSV has 180,519 data rows
+and 53 columns.
 
-The implemented SQL work currently covers database/staging setup, import, profiling, and data-quality checks (`sql/01` through `sql/04`). The later cleaning, delivery analysis, schema, inventory, advanced analysis, supplier/logistics, optimization, and reusable-view scripts (`sql/05` through `sql/12`) are present as empty placeholders. No normalized schema or downstream analytical findings are yet documented.
+The project has implemented database/staging setup, profiling, data-quality
+checks, the six-table normalized schema, and the first-load migration. The
+sections below distinguish migration verification from profiling and analytical
+findings.
+
+## Migration Results
+
+The first migration of `staging.dataco_raw` into the public normalized tables
+completed successfully. The verified destination counts were:
+
+| Table | Destination rows |
+|---|---:|
+| `category` | 51 |
+| `department` | 11 |
+| `customer` | 20,652 |
+| `product` | 118 |
+| `customer_order` | 65,752 |
+| `order_item` | 180,519 |
+
+The source contained 180,519 staging rows. Source distinct identifier counts
+matched the destination row counts for all six entities:
+
+- Category: 51 source category IDs to 51 category rows
+- Department: 11 source department IDs to 11 department rows
+- Customer: 20,652 source customer IDs to 20,652 customer rows
+- Product: 118 source product IDs to 118 product rows
+- Customer order: 65,752 source order IDs to 65,752 customer-order rows
+- Order item: 180,519 source item IDs to 180,519 order-item rows
+
+Normalization separates repeated customer, product, category, department,
+order, and order-item entities while preserving the source grain through
+foreign-key relationships. These counts confirm migration cardinality; they
+do not, by themselves, establish a business-analysis finding or operational
+recommendation.
 
 ## Profiling Results
 
@@ -27,7 +62,9 @@ The inspected important fields had no SQL `NULL` or empty/whitespace values. Ins
 - The order-cardinality check found 65,752 represented orders, between 1 and 5 item rows per order, and no orders with repeated or missing item IDs.
 - Delivery-status counts matched the corresponding `Late_delivery_risk` counts in the checked comparison. This agreement does not independently validate the source's business definition.
 
-These are source-row consistency checks. They do not replace primary-key and foreign-key validation in a normalized schema.
+These are source-row consistency observations. The implemented schema's
+primary and foreign-key constraints and the migration reconciliation provide
+the normalized-schema validation in addition to these earlier profiling checks.
 
 ## Dates and Numeric Measures
 
@@ -43,14 +80,17 @@ The order-level variation checks for `Order Profit Per Order` and `Benefit per o
 
 ## Interpretation
 
-The checks support treating the source as order-item-grain data and support the proposed entity relationships as a starting point. They do not establish final schema constraints, financial aggregation rules, causal explanations for delivery outcomes, or supplier/inventory performance.
+The checks support treating the source as order-item-grain data and support
+the implemented entity relationships as a normalized representation. They do
+not establish financial aggregation rules, causal explanations for delivery
+outcomes, or supplier/inventory performance.
 
 Metric definitions and their current status are in [metric_definitions.md](./metric_definitions.md). Remaining assumptions and validation work are in [assumptions_and_limitations.md](./assumptions_and_limitations.md).
 
 ## Next Work
 
-1. Validate candidate keys and foreign-key relationships for the proposed entities.
-2. Resolve remaining product/category/department identifier and schema decisions.
-3. Confirm measure meanings and aggregation rules before reporting financial or delivery KPIs.
-4. Implement and test the normalized schema, then execute the planned analysis scripts.
-5. Add results and recommendations only after the relevant queries have been run and checked.
+1. Validate the migration evidence captured in `results/tables/` against future database snapshots.
+2. Resolve remaining measure meanings and aggregation rules before reporting financial or delivery KPIs.
+3. Resolve customer geography and excluded source fields only if a supported business entity or requirement is established.
+4. Execute and document downstream delivery, sales, or operational analysis scripts before drawing analytical conclusions.
+5. Add results and recommendations only after relevant queries have been run and checked.

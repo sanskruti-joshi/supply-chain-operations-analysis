@@ -39,7 +39,11 @@ The analysis asks where delivery outcomes and sales patterns vary across shippin
 
 ## Scope
 
-The current implemented work is focused on raw-data setup, import, profiling, and data-quality investigation. Delivery, sales, inventory, supplier, normalized-schema, reusable-view, and optimization analyses remain planned until corresponding SQL and validated results are present.
+The current implemented work includes raw-data setup, profiling,
+data-quality investigation, a six-table normalized schema, and first-load
+migration. Delivery, sales, inventory, supplier, reusable-view, and
+optimization analyses remain planned until corresponding SQL and validated
+results are present.
 
 The source contains order, customer, product, geographic, and shipping fields. It does not currently provide supplier identifiers or inventory/replenishment history sufficient to measure supplier performance, stockouts, or inventory risk. Such analysis would require another dataset or an explicitly identified synthetic extension.
 

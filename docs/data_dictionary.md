@@ -1,96 +1,119 @@
-
 # Data Dictionary
 
 ## 1. Overview
 
-The DataCo Smart Supply Chain dataset includes order, customer, product, sales, delivery, and shipping information.
+This dictionary describes the six implemented normalized tables in PostgreSQL.
+Column names, types, and nullability are based on
+`sql/05_schema_and_constraints.sql`. Source-column descriptions are retained
+where they clarify the implemented mappings; they are descriptive metadata,
+not independent proof of a business definition.
 
-This dictionary is based on the accompanying `DescriptionDataCoSupplyChain.csv` file. Descriptions are reproduced in substance from that source and have not been independently validated against the raw dataset.
+## 2. Category
 
-## 2. Transaction and Order Information
+| Column | PostgreSQL type | Nullability | Key / constraint | Source description |
+|---|---|---|---|---|
+| `category_id` | `INTEGER` | NOT NULL | Primary key | Product category code. |
+| `category_name` | `VARCHAR(50)` | NOT NULL |  | Description of the product category. |
 
-| Field | Description |
-|---|---|
-| Type | Type of transaction made. |
-| Order Id | Order code. |
-| Order Customer Id | Customer order code. |
-| Order Status | Order status, including COMPLETE, PENDING, CLOSED, PENDING_PAYMENT, CANCELED, PROCESSING, SUSPECTED_FRAUD, ON_HOLD, and PAYMENT_REVIEW. |
-| order date (DateOrders) | Date on which the order is made. |
-| Order Item Id | Order item code. |
-| Order Item Quantity | Number of products per order. |
+Source mapping: `Category Id` and `Category Name`.
 
-## 3. Sales, Discounts, and Profit
+## 3. Department
 
-| Field | Description |
-|---|---|
-| Benefit per order | Earnings per order placed. |
-| Sales per customer | Total sales per customer. |
-| Order Item Discount | Order item discount value. |
-| Order Item Discount Rate | Order item discount percentage. |
-| Order Item Product Price | Price of products without discount. |
-| Order Item Profit Ratio | Order item profit ratio. |
-| Sales | Value in sales. |
-| Order Item Total | Total amount per order. |
-| Order Profit Per Order | Order profit per order. |
+| Column | PostgreSQL type | Nullability | Key / constraint | Source description |
+|---|---|---|---|---|
+| `department_id` | `INTEGER` | NOT NULL | Primary key | Department code of the store. |
+| `department_name` | `VARCHAR(100)` | NOT NULL |  | Department name of the store. |
 
-## 4. Delivery and Shipping
+Source mapping: `Department Id` and `Department Name`.
 
-| Field | Description |
-|---|---|
-| Days for shipping (real) | Actual shipping days of the purchased product. |
-| Days for shipment (scheduled) | Scheduled delivery days of the purchased product. |
-| Delivery Status | Delivery status: Advance shipping, Late delivery, Shipping canceled, or Shipping on time. |
-| Late_delivery_risk | Categorical variable indicating whether shipping is late (1) or not late (0). |
-| Shipping date (DateOrders) | Exact date and time of shipment. |
-| Shipping Mode | Shipping mode: Standard Class, First Class, Second Class, or Same Day. |
+## 4. Customer
 
-## 5. Customer Information
+| Column | PostgreSQL type | Nullability | Key / constraint | Source description |
+|---|---|---|---|---|
+| `customer_id` | `INTEGER` | NOT NULL | Primary key | Customer ID. |
+| `first_name` | `TEXT` | NULL allowed |  | Customer first name. |
+| `last_name` | `TEXT` | NULL allowed |  | Customer last name. |
+| `email` | `TEXT` | NULL allowed |  | Customer email. |
+| `customer_segment` | `TEXT` | NULL allowed |  | Consumer, Corporate, or Home Office customer type. |
 
-| Field | Description |
-|---|---|
-| Customer Id | Customer ID. |
-| Customer Email | Customer's email. |
-| Customer Fname | Customer first name. |
-| Customer Lname | Customer last name. |
-| Customer Password | Masked customer key, according to the source description. |
-| Customer Segment | Customer type: Consumer, Corporate, or Home Office. |
-| Customer City | City where the customer made the purchase. |
-| Customer Country | Country where the customer made the purchase. |
-| Customer State | State to which the store where the purchase is registered belongs, according to the source description. |
-| Customer Street | Street to which the store where the purchase is registered belongs, according to the source description. |
-| Customer Zipcode | Customer ZIP/postal code. |
+Source mapping: `Customer Id`, `Customer Fname`, `Customer Lname`,
+`Customer Email`, and `Customer Segment`.
 
-## 6. Product and Category Information
+## 5. Product
 
-| Field | Description |
-|---|---|
-| Category Id | Product category code. |
-| Category Name | Description of the product category. |
-| Order Item Cardprod Id | Product code generated through the RFID reader, according to the source description. |
-| Product Card Id | Product code. |
-| Product Category Id | Product category code. |
-| Product Description | Product description. |
-| Product Image | Link for visiting and purchasing the product. |
-| Product Name | Product name. |
-| Product Price | Product price. |
-| Product Status | Source definition: 1 means not available; 0 means available. |
+| Column | PostgreSQL type | Nullability | Key / constraint | Source description |
+|---|---|---|---|---|
+| `product_id` | `INTEGER` | NOT NULL | Primary key | Product code. |
+| `category_id` | `INTEGER` | NULL allowed | Foreign key to `category.category_id` | Product category code. |
+| `department_id` | `INTEGER` | NULL allowed | Foreign key to `department.department_id` | Department code. |
+| `product_name` | `TEXT` | NULL allowed |  | Product name. |
+| `description` | `TEXT` | NULL allowed |  | Product description. |
+| `image_url` | `TEXT` | NULL allowed |  | Product image link. |
+| `product_price` | `NUMERIC(18,9)` | NOT NULL |  | Product price. |
+| `product_status` | `SMALLINT` | NULL allowed |  | Source coding: 0 available and 1 unavailable in the source glossary. |
 
-## 7. Department and Store Information
+Source mapping: `Product Card Id`, `Product Category Id`, `Department Id`,
+`Product Name`, `Product Description`, `Product Image`, `Product Price`, and
+`Product Status`.
 
-| Field | Description |
-|---|---|
-| Department Id | Department code of store. |
-| Department Name | Department name of store. |
-| Latitude | Latitude corresponding to location of store. |
-| Longitude | Longitude corresponding to location of store. |
+## 6. Customer Order
 
-## 8. Order Destination and Geography
+| Column | PostgreSQL type | Nullability | Key / constraint | Source description |
+|---|---|---|---|---|
+| `order_id` | `INTEGER` | NOT NULL | Primary key | Order code. |
+| `customer_id` | `INTEGER` | NULL allowed | Foreign key to `customer.customer_id` | Customer reference sourced from `Order Customer Id`. |
+| `transaction_type` | `TEXT` | NULL allowed |  | Type of transaction. |
+| `order_date` | `TIMESTAMP WITHOUT TIME ZONE` | NULL allowed |  | Date and time the order was made. |
+| `shipping_date` | `TIMESTAMP WITHOUT TIME ZONE` | NULL allowed |  | Shipment date and time. |
+| `order_status` | `TEXT` | NULL allowed |  | Order lifecycle status. |
+| `shipping_mode` | `TEXT` | NULL allowed |  | Standard, First, Second, or Same Day shipping mode. |
+| `actual_shipping_days` | `INTEGER` | NULL allowed |  | Actual shipping duration. |
+| `scheduled_shipping_days` | `INTEGER` | NULL allowed |  | Scheduled shipping duration. |
+| `delivery_status` | `TEXT` | NULL allowed |  | Delivery outcome. |
+| `late_delivery_risk` | `SMALLINT` | NULL allowed |  | Source 0/1 late-delivery indicator. |
+| `market` | `TEXT` | NULL allowed |  | Destination market. |
+| `destination_city` | `TEXT` | NULL allowed |  | Destination city. |
+| `destination_state` | `TEXT` | NULL allowed |  | Destination state. |
+| `destination_country` | `TEXT` | NULL allowed |  | Destination country. |
+| `destination_postal_code` | `TEXT` | NULL allowed |  | Destination ZIP/postal code. |
+| `destination_region` | `VARCHAR(32)` | NULL allowed |  | Destination region. |
 
-| Field | Description |
-|---|---|
-| Market | Market where the order is delivered: Africa, Europe, LATAM, Pacific Asia, or USCA. |
-| Order City | Destination city of the order. |
-| Order Country | Destination country of the order. |
-| Order Region | Region of the world where the order is delivered. The source lists regions including Southeast Asia, South Asia, Oceania, Eastern Asia, West Asia, West of USA, US Center, West Africa, Central Africa, North Africa, Western Europe, Northern, Caribbean, South America, East Africa, Southern Europe, East of USA, Canada, Southern Africa, Central Asia, Europe, Central America, Eastern Europe, and South of USA. |
-| Order State | State of the region where the order is delivered. |
-| Order Zipcode | Destination ZIP/postal code; the source description file does not define this field. |
+Source mapping: `Type`, `Order Id`, `Order Customer Id`,
+`order date (DateOrders)`, `shipping date (DateOrders)`, `Order Status`,
+`Shipping Mode`, `Days for shipping (real)`, `Days for shipment (scheduled)`,
+`Delivery Status`, `Late_delivery_risk`, `Market`, `Order City`, `Order State`,
+`Order Country`, `Order Zipcode`, and `Order Region`.
+
+## 7. Order Item
+
+| Column | PostgreSQL type | Nullability | Key / constraint | Source description |
+|---|---|---|---|---|
+| `order_item_id` | `INTEGER` | NOT NULL | Primary key | Order-item code. |
+| `order_id` | `INTEGER` | NULL allowed | Foreign key to `customer_order.order_id` | Parent order identifier. |
+| `product_id` | `INTEGER` | NULL allowed | Foreign key to `product.product_id` | Product reference sourced from `Order Item Cardprod Id`. |
+| `discount_amount` | `NUMERIC(18,9)` | NULL allowed |  | Order-item discount amount. |
+| `discount_rate` | `NUMERIC(11,9)` | NULL allowed |  | Order-item discount rate. |
+| `unit_product_price` | `NUMERIC(18,9)` | NULL allowed |  | Price of the product without discount. |
+| `profit_ratio` | `NUMERIC(11,9)` | NULL allowed |  | Order-item profit ratio. |
+| `quantity` | `INTEGER` | NULL allowed |  | Number of products on the item row. |
+| `sales_amount` | `NUMERIC(18,9)` | NULL allowed |  | Item-level sales value sourced from `Sales`. |
+| `order_item_total` | `NUMERIC(18,9)` | NULL allowed |  | Item total sourced from `Order Item Total`. |
+
+Source mapping: `Order Item Id`, `Order Id`, `Order Item Cardprod Id`,
+`Order Item Discount`, `Order Item Discount Rate`, `Order Item Product Price`,
+`Order Item Profit Ratio`, `Order Item Quantity`, `Sales`, and
+`Order Item Total`.
+
+## 8. Intentionally Excluded Fields
+
+The following source fields are not modeled:
+
+- `Customer Password`
+- `Customer City`, `Customer Country`, `Customer State`, `Customer Street`,
+  and `Customer Zipcode`
+- `Latitude` and `Longitude`
+- `Sales per customer`
+- `Order Profit Per Order` and `Benefit per order`
+
+These exclusions preserve unresolved business ownership or profit meanings.
+No formulas or assumptions were introduced during migration.

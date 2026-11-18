@@ -4,7 +4,13 @@
 
 - `staging.dataco_raw` represents the source CSV at order-item grain: multiple rows may belong to one order.
 - The raw staging table retains source values as text to preserve their original representation during profiling.
-- Repeated customer, product, category, and department identifiers in staging are expected; uniqueness is assessed within each proposed entity rather than across the denormalized rows.
+- Repeated customer, product, category, and department identifiers in staging are expected; uniqueness is assessed within each implemented entity rather than across the denormalized rows.
+- The implemented normalized schema preserves the source mapping documented in
+  `docs/source_to_entity_mapping.md`. Primary and foreign keys follow
+  `sql/05_schema_and_constraints.sql`.
+- The migration is a first-load process. Existing destination rows block
+  rerunning `sql/06_data_migration.sql`; no truncate, delete, or overwrite
+  reload mechanism is implemented.
 - A query returning no matching rows only supports the condition tested. It does not establish complete integrity or correctness.
 - The source glossary is descriptive metadata, not independent proof of a field's business meaning.
 
@@ -19,11 +25,14 @@
 
 ## Validation Still Required
 
-- Confirm candidate primary-key uniqueness and non-nullness for each entity in the proposed model.
-- Validate all foreign-key relationships after the normalized schema is designed.
-- Finalize the order-item product identifier mapping and appropriate source columns.
+- Confirm future migration batches with primary-key uniqueness and non-nullness for each implemented entity.
+- Validate foreign-key relationships for every future migration batch.
+- Revalidate the order-item product identifier mapping when future source batches are loaded.
 - Choose defensible aggregation rules for financial and delivery measures.
 - Resolve whether either duplicate profit field has a defined business meaning or valid grain before including it in the normalized model or reporting profit. The source-row values alone do not establish that decision.
-- Finalize PostgreSQL data types and constraints before implementing normalized tables.
+- Preserve the implemented PostgreSQL types until a separately reviewed schema
+  change establishes a need for different precision or constraints.
+- Design and approve a reload/merge process before rerunning migration for a
+  new or changed source batch.
 
 Reported profiling and consistency-check results are collected in [findings_report.md](./findings_report.md), rather than repeated here or in the ER diagram.

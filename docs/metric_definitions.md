@@ -2,12 +2,16 @@
 
 ## Status and Grain
 
-The source is being treated as order-item-grain data, but the SQL project has not yet implemented downstream metric queries. The definitions below are analytical conventions to use or revise after validation; they are not a claim that the metrics have already been calculated. Unless otherwise stated, item-level rates use valid order-item rows as their denominator.
+The source is migrated in an order-item-grain normalized model, but the project
+has not yet implemented downstream analytical metric queries. The definitions
+below are analytical conventions to use or revise after validation; they are
+not claims that metrics have already been calculated. Unless otherwise stated,
+item-level rates use valid order-item rows as their denominator.
 
 | Metric | Proposed definition | Grain | Status / caveat |
 |---|---|---|---|
-| Total orders | Count distinct nonblank `Order Id`. | Order | Profiled as 65,752 in the current source. |
-| Total order items | Count distinct nonblank `Order Item Id`, after confirming uniqueness. | Order item | Profiled as 180,519 distinct IDs; candidate key checks are not a normalized-schema constraint. |
+| Total orders | Count distinct nonblank `Order Id`. | Order | The migration resulted in 65,752 customer-order rows. |
+| Total order items | Count distinct nonblank `Order Item Id`, after confirming uniqueness. | Order item | The migration resulted in 180,519 order-item rows. |
 | Late-delivery rate | Late eligible item rows divided by eligible item rows; classify using `Delivery Status = 'Late delivery'` and separately reconcile with `Late_delivery_risk`. | Order item | Denominator, treatment of canceled/unknown statuses, and order-level reporting rule must be explicit. |
 | On-time delivery rate | Eligible item rows with `Delivery Status = 'Shipping on time'` divided by eligible item rows. | Order item | Keep distinct from advance shipping; use the same eligibility rule as the late rate. |
 | Advance-shipping rate | Eligible item rows with `Delivery Status = 'Advance shipping'` divided by eligible item rows. | Order item | Use the same eligibility rule as other delivery-status rates. |
