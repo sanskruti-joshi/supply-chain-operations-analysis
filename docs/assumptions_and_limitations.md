@@ -22,6 +22,11 @@
 - Customer-related fields exist in the source. Keep raw data and query results private; do not publish customer values or commit derived exports without an appropriate review.
 - In the inspected source CSV, `Order Profit Per Order` and `Benefit per order` are identical on every row, and both vary within many orders. They are not confirmed order-level measures, nor is either confirmed to be item-level profit. Their business meaning and valid aggregation remain unresolved; do not model or aggregate either as profit until defined.
 - The exact business definitions and aggregation rules for sales, discounts, profit, and delivery denominators remain subject to validation.
+- Delivery status rates in `sql/07_delivery_performance.sql` classify
+  `Late delivery` case-insensitively, report canceled and missing statuses
+  separately, and exclude missing delivery statuses from late-rate denominators.
+- Shipping-duration differences are calculated as actual shipping days minus
+  scheduled shipping days; positive values mean actual shipping took longer.
 
 ## Validation Still Required
 

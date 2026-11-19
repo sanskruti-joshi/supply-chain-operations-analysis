@@ -26,3 +26,6 @@ reinserted or truncated.
 
 This record summarizes migration completeness only. It does not contain
 customer-level data or analytical findings.
+
+The subsequent order-level delivery analysis is documented separately in
+[delivery_performance_summary.md](./delivery_performance_summary.md).

@@ -1,6 +1,6 @@
 # Supply Chain & Operations Intelligence
 
-A PostgreSQL and SQL portfolio project exploring order, delivery, and supply-chain data from the DataCo Smart Supply Chain dataset. The current implemented work is focused on staging setup, import, profiling, and data-quality checks; downstream analysis and schema work remain in progress.
+A PostgreSQL and SQL portfolio project exploring order, delivery, and supply-chain data from the DataCo Smart Supply Chain dataset. The current implemented work includes staging setup, import, profiling, data-quality checks, normalized migration, and an order-level delivery-performance analysis.
 
 ## Project Goals
 
@@ -28,8 +28,11 @@ Run the populated scripts in order:
 2. `sql/02_import_dataco.sql` — guarded `psql` `\copy` import from the local source CSV.
 3. `sql/03_data_profiling.sql` — read-only profiling.
 4. `sql/04_data_quality_checks.sql` — read-only consistency and anomaly checks.
+5. `sql/05_schema_and_constraints.sql` — creates the normalized public schema.
+6. `sql/06_data_migration.sql` — migrates source data into normalized tables.
+7. `sql/07_delivery_performance.sql` — order-level delivery-performance analysis.
 
-Scripts `sql/05` through `sql/12` are currently placeholders, not completed analyses. Findings recorded so far are summarized in [docs/findings_report.md](./docs/findings_report.md).
+The delivery analysis is documented in [results/tables/delivery_performance_summary.md](./results/tables/delivery_performance_summary.md). Scripts `sql/08` through `sql/12` remain planned analyses. Findings recorded so far are summarized in [docs/findings_report.md](./docs/findings_report.md).
 
 ## Getting Started
 
@@ -55,6 +58,7 @@ See [data/README.md](./data/README.md) for source and data-handling notes.
 - [Source-to-entity mapping](./docs/source_to_entity_mapping.md)
 - [Metric definitions](./docs/metric_definitions.md)
 - [Findings report](./docs/findings_report.md)
+- [Delivery performance summary](./results/tables/delivery_performance_summary.md)
 
 ## Technology
 

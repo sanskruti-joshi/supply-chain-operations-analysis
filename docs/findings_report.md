@@ -7,9 +7,9 @@ the DataCo Smart Supply Chain dataset. The source CSV has 180,519 data rows
 and 53 columns.
 
 The project has implemented database/staging setup, profiling, data-quality
-checks, the six-table normalized schema, and the first-load migration. The
-sections below distinguish migration verification from profiling and analytical
-findings.
+checks, the six-table normalized schema, the first-load migration, and
+`sql/07_delivery_performance.sql`. The sections below distinguish migration
+verification from profiling and delivery findings.
 
 ## Migration Results
 
@@ -78,6 +78,36 @@ the normalized-schema validation in addition to these earlier profiling checks.
 
 The order-level variation checks for `Order Profit Per Order` and `Benefit per order` are present in `sql/04_data_quality_checks.sql`, but their execution output is not committed. The section comment calls them “order-level financial measures”; that is a check label, not evidence that either field has order-level business grain. The SQL checks each field's within-order variation separately and do not compare the two columns for equality. `sql/03_data_profiling.sql` checks their numeric syntax and explores profit-ratio values, but does not establish their relationship or aggregation. The counts and row-wise equality above are independently confirmed by a read-only audit of the local CSV; the scripts do not document or persist these result counts.
 
+## Delivery-Performance Findings
+
+The available read-only aggregate outputs from
+`public.customer_order` are summarized in
+[delivery_performance_summary.md](../results/tables/delivery_performance_summary.md).
+The complete `sql/07_delivery_performance.sql` file was not executed from
+top to bottom in the available session, so these findings refer only to the
+confirmed individual aggregate queries.
+
+- The normalized order table contains 65,752 orders.
+- Delivery-status counts: 36,048 late (54.82%), 15,127 advance shipping
+  (23.01%), 11,722 on time (17.83%), and 2,855 canceled (4.34%).
+- Late-delivery rates by shipping mode: First Class 95.27%, Second Class
+  76.72%, Same Day 46.15%, and Standard Class 38.13%.
+- Markets ranged from 54.13% late in Africa to 55.30% in Pacific Asia.
+- The complete available region output showed 57.55% in Central Africa and
+  49.51% in Canada, with regional rates sorted and reported in the summary.
+- Average actual shipping was 3.50 days versus 2.93 scheduled. The average
+  difference was 0.57 actual minus scheduled days.
+- Among all 65,752 orders, 37,698 exceeded the schedule, 12,267 matched it,
+  and 15,787 beat it.
+- The available risk/status cross-tab contained 36,048 risk-1/late orders and
+  26,849 risk-0/not-late orders, plus 2,855 risk-0/canceled orders. It showed
+  no disagreement categories after canceled and missing statuses were excluded.
+
+These are descriptive associations, not evidence of causation or predictive
+accuracy. Missing delivery statuses are excluded from late-rate denominators,
+canceled orders are kept separate, and the monthly trend is grouped by
+`order_date`.
+
 ## Interpretation
 
 The checks support treating the source as order-item-grain data and support
@@ -90,7 +120,7 @@ Metric definitions and their current status are in [metric_definitions.md](./met
 ## Next Work
 
 1. Validate the migration evidence captured in `results/tables/` against future database snapshots.
-2. Resolve remaining measure meanings and aggregation rules before reporting financial or delivery KPIs.
+2. Resolve remaining financial measure meanings and aggregation rules before reporting financial KPIs.
 3. Resolve customer geography and excluded source fields only if a supported business entity or requirement is established.
-4. Execute and document downstream delivery, sales, or operational analysis scripts before drawing analytical conclusions.
+4. Execute the remaining downstream sales, inventory, supplier, reusable-view, and optimization analysis scripts before drawing conclusions in those areas.
 5. Add results and recommendations only after relevant queries have been run and checked.
