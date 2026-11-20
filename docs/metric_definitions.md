@@ -24,5 +24,13 @@ once.
 | Order-item frequency | Count `order_item.order_item_id` rows for the selected population. | Order item | Distinct from units ordered: a row represents one order item, while `quantity` may contain multiple units. |
 | Observed demand contribution | `Group units ordered / Overall units ordered`, expressed as a percentage. | Product, category, department, or month | Implemented for unit-based demand comparisons only; it is not sales or inventory-value contribution. |
 | Demand-based ABC class | Classify products by cumulative observed units: A through 80%, B above 80% through 95%, C above 95%. Products are ordered by units descending and `product_id` ascending for ties. | Product | Implemented in Stage 08 as a unit-demand prioritization proxy, not conventional inventory-value ABC analysis. |
+| Distinct orders per customer | Count unique orders associated with a customer. | Customer | Implemented in Stage 09; one row per customer. |
+| Total units purchased | Sum recorded order-item quantities for a customer. | Customer | Implemented in Stage 09 as observed units, not stock or inventory. |
+| Average units per order | Customer's total units purchased divided by that customer's distinct orders. | Customer | Implemented in Stage 09; a zero-order denominator returns no average. |
+| Days since most recent order | Difference between the dataset reference date and the customer's latest recorded order date. | Customer | Implemented in Stage 09 using the maximum available order date, not the current date. |
+| Purchasing-frequency classification | Classify observed distinct orders as low (1 order), recurring (2–4 orders), or frequent (5 or more orders). | Customer | Implemented in Stage 09 from observed purchase records. |
+| NTILE frequency segment | Relative third of the active-customer population, ordered by distinct order count. | Customer | Implemented in Stage 09 with `customer_id` as a deterministic tie-breaker; equal counts may be split, and segments are not absolute behavioural categories. |
+| Repeat-order customer | Customer with more than one distinct recorded order. | Customer | Implemented in Stage 09; repeat status does not establish loyalty or future retention. |
+| Demand concentration | Share of total observed units accounted for by a ranked customer group. | Customer group | Implemented in Stage 09 as a historical descriptive share, not a predictive or causal measure. |
 
 For source profiling and data-quality evidence, see [findings_report.md](./findings_report.md). Related interpretation limits are in [assumptions_and_limitations.md](./assumptions_and_limitations.md).

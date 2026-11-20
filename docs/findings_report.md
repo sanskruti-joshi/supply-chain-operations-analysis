@@ -6,8 +6,9 @@ This report records implemented project work on the DataCo Smart Supply Chain
 dataset. The project has implemented database and staging setup, profiling,
 data-quality checks, the six-table normalized schema and first-load migration,
 the Stage 07 delivery-performance analysis, and the Stage 08 demand-based
-inventory analysis. The sections below distinguish migration verification,
-profiling, delivery, and historical product-demand findings.
+inventory analysis. Stage 09 advanced customer analytics is also implemented.
+The sections below distinguish migration verification, profiling, delivery,
+historical product-demand, and customer purchasing findings.
 
 ## Migration Results
 
@@ -127,6 +128,26 @@ stock-on-hand, stockout rates, inventory turnover, days on hand, reorder points,
 safety stock, supplier replenishment, or actual inventory optimization. The
 ABC classification is unit-demand-based, not a measure of inventory value,
 profitability, or stockout risk.
+
+## Advanced Customer Analytics
+
+The Stage 09 customer analysis is summarized in
+[advanced_analytics_summary.md](../results/advanced_analytics_summary.md).
+
+- The customer population contains 20,652 customers, and all have at least
+  one recorded order.
+- Repeat-order customers number 11,768, or 56.98% of the population.
+- One-order customers number 8,884, or 43.02% of the population.
+- The frequent observed purchasing group contains 6,093 customers, or 29.50%
+  of the population.
+- NTILE segment 1 accounts for 275,026 units, or 71.60% of observed units.
+- The top 20% of active customers account for 202,265 units, or 52.6623% of
+  observed units.
+- All six V1–V6 validation checks passed.
+
+These findings describe recorded customer purchasing activity. NTILE segments
+are relative population groups, and repeat purchasing does not establish
+loyalty or future retention.
 
 ## Interpretation
 

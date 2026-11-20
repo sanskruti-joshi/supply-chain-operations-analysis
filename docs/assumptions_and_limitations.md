@@ -28,6 +28,22 @@
   separately, and exclude missing delivery statuses from late-rate denominators.
 - Shipping-duration differences are calculated as actual shipping days minus
   scheduled shipping days; positive values mean actual shipping took longer.
+- Recency in Stage 09 uses 2018-01-31, the maximum available
+  `customer_order.order_date`, as the dataset reference date. It is not based
+  on the current date.
+- Stage 09 purchasing-frequency classifications use fixed thresholds based on
+  observed distinct orders: low means 1 order, recurring means 2–4 orders,
+  and frequent means 5 or more orders.
+- NTILE frequency segmentation divides active customers into relative
+  population thirds. It does not create absolute behavioural categories,
+  and customers with equal order counts may be split across segments.
+- Repeat purchasing does not establish customer loyalty or predict future
+  retention.
+- No recorded orders would not independently establish customer churn or
+  inactivity. In the available Stage 09 dataset, all 20,652 customers have
+  at least one recorded order.
+- Stage 09 demand concentration describes historical recorded units. It does
+  not predict future demand.
 
 ## Validation Still Required
 
