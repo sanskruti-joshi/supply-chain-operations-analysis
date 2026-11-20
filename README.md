@@ -16,8 +16,6 @@ Supplier performance and inventory risk are questions for future work: the curre
 - `data/` — source-data instructions and local datasets
 - `docs/` — business context, assumptions, proposed model, data dictionary, metrics, and findings
 - `sql/` — setup, import, profiling, validation, and planned analysis scripts
-- `tests/` — SQL data-quality test work
-- `references/` — SQL patterns
 - `results/` — reserved for reviewed outputs
 
 ## Current SQL Progress
