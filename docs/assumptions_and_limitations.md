@@ -19,6 +19,7 @@
 - The dataset's coverage period, completeness, and representativeness have not been independently established.
 - Available fields may show an association with delivery outcomes but do not explain the causes of delays.
 - Supplier identifiers and inventory/replenishment history are not established in the current dataset; supplier-performance and inventory-risk conclusions are therefore out of scope without additional data.
+- Stage 08 inventory analysis uses historical order-item quantity and order activity as a demand proxy. The dataset does not provide verified stock-on-hand snapshots, warehouse stock levels, stockout history, supplier replenishment records, or inventory transaction history.
 - Customer-related fields exist in the source. Keep raw data and query results private; do not publish customer values or commit derived exports without an appropriate review.
 - In the inspected source CSV, `Order Profit Per Order` and `Benefit per order` are identical on every row, and both vary within many orders. They are not confirmed order-level measures, nor is either confirmed to be item-level profit. Their business meaning and valid aggregation remain unresolved; do not model or aggregate either as profit until defined.
 - The exact business definitions and aggregation rules for sales, discounts, profit, and delivery denominators remain subject to validation.

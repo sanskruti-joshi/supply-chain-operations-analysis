@@ -2,14 +2,12 @@
 
 ## Status
 
-This report records results from initial profiling and data-quality checks on
-the DataCo Smart Supply Chain dataset. The source CSV has 180,519 data rows
-and 53 columns.
-
-The project has implemented database/staging setup, profiling, data-quality
-checks, the six-table normalized schema, the first-load migration, and
-`sql/07_delivery_performance.sql`. The sections below distinguish migration
-verification from profiling and delivery findings.
+This report records implemented project work on the DataCo Smart Supply Chain
+dataset. The project has implemented database and staging setup, profiling,
+data-quality checks, the six-table normalized schema and first-load migration,
+the Stage 07 delivery-performance analysis, and the Stage 08 demand-based
+inventory analysis. The sections below distinguish migration verification,
+profiling, delivery, and historical product-demand findings.
 
 ## Migration Results
 
@@ -82,10 +80,9 @@ The order-level variation checks for `Order Profit Per Order` and `Benefit per o
 
 The available read-only aggregate outputs from
 `public.customer_order` are summarized in
-[delivery_performance_summary.md](../results/tables/delivery_performance_summary.md).
-The complete `sql/07_delivery_performance.sql` file was not executed from
-top to bottom in the available session, so these findings refer only to the
-confirmed individual aggregate queries.
+[delivery_performance_summary.md](../results/delivery_performance_summary.md).
+The complete `sql/07_delivery_performance.sql` file was executed from beginning
+to end successfully.
 
 - The normalized order table contains 65,752 orders.
 - Delivery-status counts: 36,048 late (54.82%), 15,127 advance shipping
@@ -108,19 +105,53 @@ accuracy. Missing delivery statuses are excluded from late-rate denominators,
 canceled orders are kept separate, and the monthly trend is grouped by
 `order_date`.
 
+## Demand-Based Inventory Findings
+
+The Stage 08 demand-based inventory analysis is summarized in
+[inventory_analysis_summary.md](../results/inventory_analysis_summary.md).
+
+- The available order-item population contains 180,519 records representing
+  384,079 units across 118 products.
+- Perfect Fitness Perfect Rip Deck had the highest observed demand at 73,698
+  units, or 19.19% of observed units.
+- Seven A-class products, representing 5.93% of products, accounted for 78.74%
+  of observed units. This classification is based on cumulative unit demand.
+- Fan Shop, Golf, and Apparel together accounted for 79.05% of observed units.
+- October 2017 showed a substantial decline in recorded demand. Later-period
+  data completeness has not been independently established, so this result
+  should be interpreted cautiously.
+
+These findings use historical order-item quantities as a proxy for observed
+demand. This is not actual inventory analysis and does not establish
+stock-on-hand, stockout rates, inventory turnover, days on hand, reorder points,
+safety stock, supplier replenishment, or actual inventory optimization. The
+ABC classification is unit-demand-based, not a measure of inventory value,
+profitability, or stockout risk.
+
 ## Interpretation
 
 The checks support treating the source as order-item-grain data and support
 the implemented entity relationships as a normalized representation. They do
 not establish financial aggregation rules, causal explanations for delivery
-outcomes, or supplier/inventory performance.
+outcomes, or supplier and inventory performance.
+
+Profiling and data-quality checks, migration validation, delivery-performance
+analysis, and demand-based inventory analysis support descriptive reporting of
+orders, delivery outcomes, and historical product demand. Delivery outcomes
+vary across shipping modes and geographic regions. Historical product demand is
+concentrated among a relatively small number of products and departments.
+Financial aggregation rules remain unresolved. The available data cannot assess
+actual inventory levels or supplier/replenishment performance. These findings
+remain descriptive associations and do not establish causation or predictive
+performance.
 
 Metric definitions and their current status are in [metric_definitions.md](./metric_definitions.md). Remaining assumptions and validation work are in [assumptions_and_limitations.md](./assumptions_and_limitations.md).
 
 ## Next Work
 
-1. Validate the migration evidence captured in `results/tables/` against future database snapshots.
-2. Resolve remaining financial measure meanings and aggregation rules before reporting financial KPIs.
+1. Validate migration evidence against future database snapshots.
+2. Resolve financial measure meanings and aggregation rules before reporting financial KPIs.
 3. Resolve customer geography and excluded source fields only if a supported business entity or requirement is established.
-4. Execute the remaining downstream sales, inventory, supplier, reusable-view, and optimization analysis scripts before drawing conclusions in those areas.
-5. Add results and recommendations only after relevant queries have been run and checked.
+4. Continue remaining supported sales, reusable-view, and optimization analysis stages.
+5. Investigate supplier-related analysis only if additional supplier data or relevant identifiers become available.
+6. Add results and recommendations only after relevant queries have been executed and checked.

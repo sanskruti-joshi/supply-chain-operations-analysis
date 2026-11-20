@@ -31,8 +31,9 @@ Run the populated scripts in order:
 5. `sql/05_schema_and_constraints.sql` — creates the normalized public schema.
 6. `sql/06_data_migration.sql` — migrates source data into normalized tables.
 7. `sql/07_delivery_performance.sql` — order-level delivery-performance analysis.
+8. `sql/08_inventory_analysis.sql` — demand-based product, category, department, monthly, and ABC-style demand analysis.
 
-The delivery analysis is documented in [results/tables/delivery_performance_summary.md](./results/tables/delivery_performance_summary.md). Scripts `sql/08` through `sql/12` remain planned analyses. Findings recorded so far are summarized in [docs/findings_report.md](./docs/findings_report.md).
+Findings recorded so far are summarized in [docs/findings_report.md](./docs/findings_report.md).
 
 ## Getting Started
 
@@ -58,7 +59,8 @@ See [data/README.md](./data/README.md) for source and data-handling notes.
 - [Source-to-entity mapping](./docs/source_to_entity_mapping.md)
 - [Metric definitions](./docs/metric_definitions.md)
 - [Findings report](./docs/findings_report.md)
-- [Delivery performance summary](./results/tables/delivery_performance_summary.md)
+- [Delivery performance summary](./results/delivery_performance_summary.md)
+- [Inventory analysis summary](./results/inventory_analysis_summary.md)
 
 ## Technology
 
