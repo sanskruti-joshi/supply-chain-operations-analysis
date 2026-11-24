@@ -44,6 +44,14 @@
   at least one recorded order.
 - Stage 09 demand concentration describes historical recorded units. It does
   not predict future demand.
+- Stage 10 performance measurements were collected under warm-cache conditions.
+  Execution time can vary with system load and cache state.
+- Stage 10 reflects the tested analytical workloads and the current database
+  size. It does not establish performance for different queries, production
+  traffic, larger datasets or different PostgreSQL configurations.
+- No optimization benefit was measured because no index or query change was
+  implemented. The Stage 10 baseline does not establish that future workload
+  patterns would retain the same execution strategies.
 
 ## Validation Still Required
 

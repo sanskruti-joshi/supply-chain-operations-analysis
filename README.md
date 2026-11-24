@@ -31,6 +31,7 @@ Run the populated scripts in order:
 7. `sql/07_delivery_performance.sql` — order-level delivery-performance analysis.
 8. `sql/08_inventory_analysis.sql` — demand-based product, category, department, monthly, and ABC-style demand analysis.
 9. `sql/09_advanced_analytics.sql` — advanced customer analytics covering purchasing profiles, recency and frequency, relative customer segmentation, repeat purchasing, customer rankings, and demand concentration.
+10. `sql/10_query_optimization.sql` — Stage 10 baseline execution-plan and candidate-index investigation. It records actual B1–B3 PostgreSQL plans and validation checks without adding indexes or rewriting the analytical queries.
 
 Findings recorded so far are summarized in [docs/findings_report.md](./docs/findings_report.md).
 
@@ -61,6 +62,7 @@ See [data/README.md](./data/README.md) for source and data-handling notes.
 - [Delivery performance summary](./results/delivery_performance_summary.md)
 - [Inventory analysis summary](./results/inventory_analysis_summary.md)
 - [Advanced customer analytics summary](./results/advanced_analytics_summary.md)
+- [Query optimization summary](./results/query_optimization_summary.md)
 
 ## Technology
 

@@ -7,6 +7,7 @@ dataset. The project has implemented database and staging setup, profiling,
 data-quality checks, the six-table normalized schema and first-load migration,
 the Stage 07 delivery-performance analysis, and the Stage 08 demand-based
 inventory analysis. Stage 09 advanced customer analytics is also implemented.
+Stage 10 query optimization is implemented as a baseline investigation.
 The sections below distinguish migration verification, profiling, delivery,
 historical product-demand, and customer purchasing findings.
 
@@ -128,6 +129,31 @@ stock-on-hand, stockout rates, inventory turnover, days on hand, reorder points,
 safety stock, supplier replenishment, or actual inventory optimization. The
 ABC classification is unit-demand-based, not a measure of inventory value,
 profitability, or stockout risk.
+
+## Query Optimization Findings
+
+The Stage 10 investigation used `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)` for
+the Stage 07 market late-delivery aggregation, Stage 08 category-month demand
+analysis, and Stage 09 customer demand-concentration workload.
+
+- B1 used a sequential scan of 65,752 customer orders, a hashed aggregate, and
+  an in-memory sort. Captured execution times ranged from 75.632 to 96.691 ms
+  across measured runs.
+- B2 used an inner hash join from order items to customer orders, left hash
+  joins to products and categories, hashed aggregation, a 853-row window
+  calculation, and sorting. It did not contain a customer-order-to-customer-
+  order join.
+- B3 used sequential scans and hash joins across 20,652 customers, 65,752
+  customer orders, and 180,519 order items, followed by grouping, window
+  calculations and sorting. Captured execution times were approximately
+  356–360 ms.
+
+No additional index or query rewrite was implemented. The observed plans used
+full fact-table or hash-join strategies with no temporary I/O, and no candidate
+index showed sufficient evidence of benefit. All three result-equivalence
+checks passed, existing indexes and constraints remained present, and the
+basic count/key-sum snapshot had zero differences. The full details are in
+[query_optimization_summary.md](../results/query_optimization_summary.md).
 
 ## Advanced Customer Analytics
 
