@@ -21,11 +21,17 @@ The total order count is **65,752**.
 
 - **Overall late-delivery rate:** 54.82%, or 36,048 of 65,752 orders.
 - The late-rate denominator uses all orders with a nonmissing delivery status.
+  Canceled orders remain in the denominator because they have a recorded
+  delivery status, but are reported separately and are not counted as late.
 - No missing or blank delivery-status values were returned in the available outputs.
 
 ## 3. Shipping-Mode Performance
 
-Late-delivery rates below exclude missing delivery statuses from their denominators. Canceled orders remain in the observed status distributions and are not interpreted as caused by a shipping mode.
+Missing delivery statuses are excluded from late-delivery-rate denominators.
+Canceled orders remain in the denominator because they have a recorded
+delivery status, are reported separately, and are not counted as late
+deliveries. Canceled orders are excluded from the risk/status disagreement
+classification. They are not interpreted as caused by a shipping mode.
 
 | Shipping mode | Orders | Late orders | Late-delivery rate |
 |---|---:|---:|---:|
@@ -193,8 +199,8 @@ These month-to-month differences are descriptive. They do not establish seasonal
 - This is descriptive analysis; it does not establish causation or the reasons for delivery variation.
 - `late_delivery_risk` is an indicator and has been used to compare observed outcomes, not to assert predictive-model performance.
 - Missing delivery statuses are excluded from the late-delivery-rate denominators.
-- Canceled orders are separated from risk/status disagreement classifications and are not counted as late deliveries.
+- Canceled orders remain in the late-delivery-rate denominator because they have a recorded delivery status, are separated from risk/status disagreement classifications, and are not counted as late deliveries.
 - Market and region outputs describe association across existing groups and do not control for shipping mode, order volume, or other factors.
 - Monthly rates are grouped by `order_date`; they may differ from trends based on shipping date or delivery date.
 - Relative comparisons should account for order volume, especially for low-volume regions.
-- The source documentation states that coverage, representativeness, and exact delivery-denominator rules require further validation.
+- Coverage and representativeness require further validation. The implemented delivery-denominator rule is validated: missing delivery statuses are excluded, while canceled orders remain in the denominator and are reported separately.

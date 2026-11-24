@@ -9,12 +9,12 @@ A PostgreSQL and SQL portfolio project exploring order, delivery, and supply-cha
 - Explore operational patterns only when supported by the available data.
 - Build reusable SQL analyses and document query-performance baselines.
 
-Supplier performance and inventory risk are questions for future work: the current dataset does not establish supplier identifiers or inventory/replenishment history.
+Supplier performance and actual inventory-risk analysis are questions for future work: the current dataset does not establish supplier identifiers or inventory/replenishment history sufficient for these analyses.
 
 ## Repository
 
 - `data/` — source-data instructions and local datasets
-- `docs/` — business context, assumptions, proposed model, data dictionary, metrics, and findings
+- `docs/` — business context, assumptions, relational model, data dictionary, metrics, and findings
 - `sql/` — setup, import, profiling, migration, analysis, optimization, and view scripts
 - `results/` — reviewed execution results and findings summaries
 

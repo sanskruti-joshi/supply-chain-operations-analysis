@@ -104,8 +104,11 @@ to end successfully.
   no disagreement categories after canceled and missing statuses were excluded.
 
 These are descriptive associations, not evidence of causation or predictive
-accuracy. Missing delivery statuses are excluded from late-rate denominators,
-canceled orders are kept separate, and the monthly trend is grouped by
+accuracy. Missing delivery statuses are excluded from late-rate
+denominators. Canceled orders remain in the denominator because they have a
+recorded delivery status, but are reported separately and are not counted as
+late deliveries. Canceled and missing-status orders are excluded from the
+risk/status disagreement classification. The monthly trend is grouped by
 `order_date`.
 
 ## Demand-Based Inventory Findings
@@ -170,7 +173,7 @@ The Stage 09 customer analysis is summarized in
 - NTILE segment 1 accounts for 275,026 units, or 71.60% of observed units.
 - The top 20% of active customers account for 202,265 units, or 52.6623% of
   observed units.
-- All six V1–V6 validation checks passed.
+- All six Stage 09 validation checks (V1–V6) passed.
 
 These findings describe recorded customer purchasing activity. NTILE segments
 are relative population groups, and repeat purchasing does not establish
@@ -222,8 +225,6 @@ Metric definitions and their current status are in [metric_definitions.md](./met
 ## Next Work
 
 1. Validate migration evidence against future database snapshots.
-2. Resolve financial measure meanings and aggregation rules before reporting financial KPIs.
+2. Resolve sales measure interpretation, discount measure interpretation, profitability measure interpretation, and the aggregation rules required before reporting financial KPIs.
 3. Resolve customer geography and excluded source fields only if a supported business entity or requirement is established.
-4. Resolve sales and profitability aggregation rules before reporting financial KPIs or adding further financial analysis.
-5. Investigate supplier-related analysis only if additional supplier data or relevant identifiers become available.
-6. Add results and recommendations only after relevant queries have been executed and checked.
+4. Investigate supplier-related analysis only if additional supplier data or relevant identifiers become available.

@@ -48,11 +48,11 @@ The 118-product population has no zero-demand products; every product has at lea
 | 2 | Nike Men's Dri-FIT Victory Golf Polo | Women's Apparel | 21,035 | 17,869 | 62,956 | 3,147,800.00 |
 | 3 | O'Brien Men's Neoprene Life Vest | Indoor/Outdoor Games | 19,298 | 16,623 | 57,803 | 2,888,993.91 |
 | 4 | Nike Men's Free 5.0+ Running Shoe | Cardio Equipment | 12,169 | 11,092 | 36,680 | 3,667,633.20 |
-| 5 | Under Armour Girls' Toddler Spine Surge Runni | Shop By Sport | 10,617 | 9,825 | 31,735 | 1,269,082.67 |
+| 5 | Under Armour Girls' Toddler Spine Surge Runni... | Shop By Sport | 10,617 | 9,825 | 31,735 | 1,269,082.67 |
 
 Perfect Fitness Perfect Rip Deck is the clear highest-demand product: **73,698 units** across **24,515 order-item records** and **20,359 distinct orders**. Its units represent **19.19%** of total observed units.
 
-Order frequency and units ordered are related but distinct. For example, Nike Men's Dri-FIT Victory Golf Polo has 21,035 order-item records, while Field & Stream Sportsman 16 Gun Fire Safe has 17,325 records but 17,325 units because a gun-safe item has the same frequency and unit volume. These figures do not imply that item frequency equals unit demand; quantity must be aggregated separately.
+Order-item frequency and units ordered are distinct measures. An order-item record represents one line, while its quantity may contain multiple units. Consequently, a product's order-item count should not be interpreted as its total unit demand.
 
 Product names and ranks are reported as observed in the normalized dataset.
 
@@ -133,7 +133,7 @@ The highest cumulative-demand products are:
 | Nike Men's Dri-FIT Victory Golf Polo | 62,956 | 136,654 | 35.5797% | A |
 | O'Brien Men's Neoprene Life Vest | 57,803 | 194,457 | 50.6294% | A |
 | Nike Men's Free 5.0+ Running Shoe | 36,680 | 231,137 | 60.1795% | A |
-| Under Armour Girls' Toddler Spine Surge Runni | 31,735 | 262,872 | 68.4422% | A |
+| Under Armour Girls' Toddler Spine Surge Runni... | 31,735 | 262,872 | 68.4422% | A |
 | Nike Men's CJ Elite 2 TD Football Cleat | 22,246 | 285,118 | 74.2342% | A |
 | Field & Stream Sportsman 16 Gun Fire Safe | 17,325 | 302,443 | 78.7450% | A |
 

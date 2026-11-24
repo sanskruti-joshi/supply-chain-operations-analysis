@@ -10,11 +10,11 @@ aggregation and business-meaning decisions. Delivery findings use
 once. Demand, customer-purchasing, and customer demand-concentration metrics
 are implemented and documented in their respective SQL stages.
 
-| Metric | Proposed definition | Grain | Status / caveat |
+| Metric | Definition / calculation | Grain | Status / caveat |
 |---|---|---|---|
 | Total orders | Count distinct nonblank `Order Id`. | Order | The migration resulted in 65,752 customer-order rows. |
 | Total order items | Count distinct nonblank `Order Item Id`, after confirming uniqueness. | Order item | The migration resulted in 180,519 order-item rows. |
-| Late-delivery rate | `Late delivery` orders divided by orders with nonblank, nonnull delivery status. | Order | Implemented and reported as 54.82% overall (36,048 of 65,752 orders). |
+| Late-delivery rate | `Late delivery` orders divided by orders with nonmissing delivery status. Canceled orders remain in the denominator because they have a recorded status and are not counted as late deliveries. | Order | Implemented and reported as 54.82% overall (36,048 of 65,752 orders). |
 | On-time delivery rate | `Shipping on time` orders divided by orders with nonblank, nonnull delivery status. | Order | Implemented for status reporting; 11,722 orders or 17.83%. |
 | Advance-shipping rate | `Advance shipping` orders divided by orders with nonblank, nonnull delivery status. | Order | Implemented for status reporting; 15,127 orders or 23.01%. |
 | Average actual shipping days | Average valid `actual_shipping_days` values. | Order | Implemented; 65,752 orders with valid values, average 3.50 days. |
@@ -46,6 +46,12 @@ The following regular PostgreSQL views package the established metrics above:
 | `vw_customer_purchasing_profile` | Customer | Distinct orders, total units, average units per order, latest order date, and days since 2018-01-31 |
 | `vw_customer_repeat_purchase` | Customer | Repeat if more than one distinct order, one-order if exactly one, and no recorded order if zero |
 | `vw_customer_demand_concentration` | Active customer | Units purchased, deterministic rank by units descending and `customer_id` ascending, cumulative units, and cumulative demand percentage |
+
+For delivery views, missing delivery statuses are excluded from late-delivery-rate
+denominators. Canceled orders remain in the denominator because they have a
+recorded delivery status, are reported as a separate status, and are not counted
+as late deliveries. Canceled orders are excluded from risk/status disagreement
+classification.
 
 Stage 11 does not alter business definitions or introduce materialized views,
 indexes, or automatic refresh behavior.

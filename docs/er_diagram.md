@@ -11,11 +11,11 @@ order_item.
 
 ```mermaid
 erDiagram
-    CATEGORY ||--o{ PRODUCT : classifies
-    DEPARTMENT ||--o{ PRODUCT : groups
-    CUSTOMER ||--o{ CUSTOMER_ORDER : places
-    CUSTOMER_ORDER ||--o{ ORDER_ITEM : contains
-    PRODUCT ||--o{ ORDER_ITEM : appears_in
+    CATEGORY o|--o{ PRODUCT : classifies
+    DEPARTMENT o|--o{ PRODUCT : groups
+    CUSTOMER o|--o{ CUSTOMER_ORDER : places
+    CUSTOMER_ORDER o|--o{ ORDER_ITEM : contains
+    PRODUCT o|--o{ ORDER_ITEM : appears_in
 
     CATEGORY {
         integer category_id PK
@@ -82,12 +82,16 @@ erDiagram
 
 ## Relationship Cardinalities
 
-- One category may classify zero or more products.
-- One department may group zero or more products.
-- One customer may place zero or more customer orders.
-- One customer order may have zero or more order items in the schema; the
-  source migration supplied items for the represented orders.
-- One product may appear on zero or more order items.
+- A category may classify zero or more products.
+- A department may group zero or more products.
+- A customer order may reference zero or one customer.
+- A customer order may contain zero or more order items.
+- An order item may reference zero or one order and zero or one product.
+- A product may reference zero or one category and zero or one department.
+
+These cardinalities describe relationships permitted by the nullable foreign
+keys in the database schema. In the current migrated dataset, the migration
+validation identified no missing or mismatched relationship values.
 
 The foreign-key relationships are:
 

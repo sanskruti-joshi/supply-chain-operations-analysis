@@ -127,7 +127,8 @@ column at this stage.
 - **Foreign keys:** None.
 - **Attributes:** `first_name`, `last_name`, `email`, and `customer_segment`.
 - **Measures:** None.
-- **Relationships:** One CUSTOMER may place many CUSTOMER_ORDER rows; each order references one customer.
+- **Relationships:** Each customer may place zero or more customer orders.
+  Each customer order may reference zero or one customer.
 - **Boundary:** Customer city/country/state/street/postal code are not assigned yet. Although each is stable per ID in this extract, the source glossary describes some as purchase/store context. Resolve ownership before putting them in CUSTOMER or CUSTOMER_ORDER.
 
 ### CUSTOMER_ORDER (implemented)
@@ -137,8 +138,9 @@ column at this stage.
 - **Foreign keys:** `customer_id` to CUSTOMER, sourced from `Order Customer Id`.
 - **Attributes:** `transaction_type`, `order_date`, `order_status`, `market`, destination city/country/region/state/postal code, `shipping_mode`, `delivery_status`, `late_delivery_risk`, `shipping_date`.
 - **Measures:** `actual_shipping_days` and `scheduled_shipping_days`.
-- **Relationships:** One CUSTOMER_ORDER belongs to one CUSTOMER and contains
-  one or more ORDER_ITEM rows; each ORDER_ITEM belongs to one order.
+- **Relationships:** Each customer order may reference zero or one customer
+  and may contain zero or more order items. Each order item may reference
+  zero or one order.
 - **Boundary:** `Order Profit Per Order` and `Benefit per order` are identical source-row values but vary within many orders. Neither is assigned to CUSTOMER_ORDER or ORDER_ITEM; their business meaning and economic grain remain unresolved.
 
 ### ORDER_ITEM (implemented)
@@ -149,7 +151,8 @@ column at this stage.
 - **Attributes and measures:** `quantity`, `discount_amount`, `discount_rate`,
   `sales_amount`, `order_item_total`, `profit_ratio`, and `unit_product_price`.
   The item price duplicates `PRODUCT.product_price` in this extract.
-- **Relationships:** Each item belongs to one order and references one product. A product may appear on many items.
+- **Relationships:** Each order item may reference zero or one order and zero
+  or one product. A product may appear on zero or more order items.
 - **Boundary:** `Sales` and `Order Item Total` are separate item-level measures with an observed but imperfect arithmetic relationship. Do not treat them as equivalent. Do not store both duplicate profit source fields as independent measures; resolve their meaning before deciding whether one belongs here.
 
 ### PRODUCT (implemented)
@@ -158,7 +161,8 @@ column at this stage.
 - **Primary key:** `product_id` (`INTEGER`, implemented).
 - **Foreign keys:** `category_id` to CATEGORY; `department_id` to DEPARTMENT.
 - **Attributes and measures:** `product_name`, `description`, `image_url`, `product_price`, and `product_status`.
-- **Relationships:** One PRODUCT may appear on many ORDER_ITEM rows; each product references one category and one department.
+- **Relationships:** Each product may reference zero or one category and zero
+  or one department. A product may appear on zero or more order items.
 - **Boundary:** `Product Price` equals item-level `Order Item Product Price`
   throughout this extract. The migration retains both implemented columns.
 
@@ -168,7 +172,7 @@ column at this stage.
 - **Primary key:** `category_id` (`INTEGER`, implemented).
 - **Foreign keys:** None.
 - **Attributes and measures:** `category_name`; no measures.
-- **Relationships:** One CATEGORY may classify many PRODUCT rows.
+- **Relationships:** A category may classify zero or more product rows.
 
 ### DEPARTMENT (implemented)
 
@@ -176,7 +180,7 @@ column at this stage.
 - **Primary key:** `department_id` (`INTEGER`, implemented).
 - **Foreign keys:** None.
 - **Attributes and measures:** `department_name`; no measures.
-- **Relationships:** One DEPARTMENT may group many PRODUCT rows.
+- **Relationships:** A department may group zero or more product rows.
 - **Boundary:** No STORE entity is implemented. The source does not establish a store identifier or a relationship that would justify assigning latitude/longitude or store/purchase attributes to DEPARTMENT.
 
 ## 4. Key and Relationship Decisions
@@ -194,8 +198,11 @@ column at this stage.
 | `Department Id` | `DEPARTMENT.department_id` primary key and `PRODUCT.department_id` foreign key. | 11 distinct source IDs matched 11 destination department rows. |
 
 These relationships are implemented in PostgreSQL and were reconciled during
-the successful first migration. Future loads require a separately reviewed
-reload process.
+the successful first migration. The relevant relationship checks passed for
+the current migrated dataset, but the implemented foreign-key columns are
+nullable and therefore permit missing relationships if future data or a reload
+contains NULL values. Future loads require separately reviewed validation and
+a reload process.
 
 ## 5. Grain and Measure Decisions
 
@@ -288,7 +295,7 @@ All staging columns remain `TEXT`.
   Source strings parse as
   month/day/year hour:minute and carry no timezone offset. Confirm timezone
   semantics before interpreting cross-region chronology.
-- **Postal codes:** Implemented destination postal code uses `VARCHAR(32)` for
+- **Postal codes:** Implemented destination postal code uses `TEXT` for
   `Order Zipcode`. Never cast postal codes to
   integers; doing so could destroy leading zeros or formatting.
 - **Coordinates:** If ownership is later resolved, `NUMERIC(11,8)` preserves

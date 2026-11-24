@@ -27,8 +27,11 @@ The SQL script is `sql/11_views_and_reusable_metrics.sql`.
 The view preserves the Stage 07 order grain and does not join `order_item`.
 Missing or blank shipping modes and delivery statuses are represented with
 `[Missing or blank]` buckets. Missing delivery statuses are separate and are
-excluded from the late-delivery-rate denominator. Canceled orders remain in the
-observed status distribution and are not counted as late deliveries.
+excluded from the late-delivery-rate denominator. Canceled orders remain in
+the denominator because they have a recorded delivery status, are reported as
+a separate status, and are not counted as late deliveries. Canceled and
+missing-status orders are excluded from risk/status disagreement
+classification.
 
 ### Demand-based ABC
 

@@ -22,10 +22,12 @@
 - Stage 08 inventory analysis uses historical order-item quantity and order activity as a demand proxy. The dataset does not provide verified stock-on-hand snapshots, warehouse stock levels, stockout history, supplier replenishment records, or inventory transaction history.
 - Customer-related fields exist in the source. Keep raw data and query results private; do not publish customer values or commit derived exports without an appropriate review.
 - In the inspected source CSV, `Order Profit Per Order` and `Benefit per order` are identical on every row, and both vary within many orders. They are not confirmed order-level measures, nor is either confirmed to be item-level profit. Their business meaning and valid aggregation remain unresolved; do not model or aggregate either as profit until defined.
-- The exact business definitions and aggregation rules for sales, discounts, profit, and delivery denominators remain subject to validation.
+- The business definitions and aggregation rules for sales, discounts, and profit remain subject to validation. The implemented delivery-rate denominator is late orders divided by orders with nonmissing delivery status: missing statuses are excluded, while canceled orders remain in the denominator and are reported separately.
 - Delivery status rates in `sql/07_delivery_performance.sql` classify
   `Late delivery` case-insensitively, report canceled and missing statuses
-  separately, and exclude missing delivery statuses from late-rate denominators.
+  separately, exclude missing delivery statuses from late-rate denominators,
+  retain canceled orders in those denominators, and exclude canceled orders
+  from risk/status disagreement classification.
 - Shipping-duration differences are calculated as actual shipping days minus
   scheduled shipping days; positive values mean actual shipping took longer.
 - Recency in Stage 09 uses 2018-01-31, the maximum available
@@ -64,7 +66,7 @@
 - Confirm future migration batches with primary-key uniqueness and non-nullness for each implemented entity.
 - Validate foreign-key relationships for every future migration batch.
 - Revalidate the order-item product identifier mapping when future source batches are loaded.
-- Choose defensible aggregation rules for financial and delivery measures.
+- Resolve defensible aggregation rules for financial measures before introducing sales and profitability KPIs. Revisit delivery-rate denominators only if new business requirements or source definitions warrant a change.
 - Resolve whether either duplicate profit field has a defined business meaning or valid grain before including it in the normalized model or reporting profit. The source-row values alone do not establish that decision.
 - Preserve the implemented PostgreSQL types until a separately reviewed schema
   change establishes a need for different precision or constraints.
