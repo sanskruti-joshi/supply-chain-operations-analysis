@@ -1,13 +1,13 @@
 # Supply Chain & Operations Intelligence
 
-A PostgreSQL and SQL portfolio project exploring order, delivery, and supply-chain data from the DataCo Smart Supply Chain dataset. The current implemented work includes staging setup, import, profiling, data-quality checks, normalized migration, and an order-level delivery-performance analysis.
+A PostgreSQL and SQL portfolio project exploring order, delivery, and supply-chain data from the DataCo Smart Supply Chain dataset. The implemented SQL work includes staging setup, import, profiling, data-quality checks, normalized migration, delivery analysis, demand-based inventory analysis, advanced customer analytics, query optimization, and reusable analytical views.
 
 ## Project Goals
 
 - Validate source data and document its grain and limitations.
-- Develop defensible delivery, sales, and profitability metrics.
+- Develop defensible delivery and demand metrics, and clarify sales and profitability metrics only after their aggregation rules are resolved.
 - Explore operational patterns only when supported by the available data.
-- Build reusable SQL analyses and, later, evaluate query performance.
+- Build reusable SQL analyses and document query-performance baselines.
 
 Supplier performance and inventory risk are questions for future work: the current dataset does not establish supplier identifiers or inventory/replenishment history.
 
@@ -15,10 +15,12 @@ Supplier performance and inventory risk are questions for future work: the curre
 
 - `data/` — source-data instructions and local datasets
 - `docs/` — business context, assumptions, proposed model, data dictionary, metrics, and findings
-- `sql/` — setup, import, profiling, validation, and planned analysis scripts
-- `results/` — reserved for reviewed outputs
+- `sql/` — setup, import, profiling, migration, analysis, optimization, and view scripts
+- `results/` — reviewed execution results and findings summaries
 
 ## Current SQL Progress
+
+The SQL portion is complete: all 11 SQL scripts have been implemented. Stage 11 created five regular PostgreSQL views and all six Stage 11 validation sections passed successfully.
 
 Run the populated scripts in order:
 
@@ -32,8 +34,9 @@ Run the populated scripts in order:
 8. `sql/08_inventory_analysis.sql` — demand-based product, category, department, monthly, and ABC-style demand analysis.
 9. `sql/09_advanced_analytics.sql` — advanced customer analytics covering purchasing profiles, recency and frequency, relative customer segmentation, repeat purchasing, customer rankings, and demand concentration.
 10. `sql/10_query_optimization.sql` — Stage 10 baseline execution-plan and candidate-index investigation. It records actual B1–B3 PostgreSQL plans and validation checks without adding indexes or rewriting the analytical queries.
+11. `sql/11_views_and_reusable_metrics.sql` — creates five regular PostgreSQL views for reusable delivery, product-demand ABC, customer purchasing, repeat-purchase, and customer demand-concentration metrics.
 
-Findings recorded so far are summarized in [docs/findings_report.md](./docs/findings_report.md).
+Documented findings are summarized in [docs/findings_report.md](./docs/findings_report.md).
 
 ## Getting Started
 
@@ -63,6 +66,7 @@ See [data/README.md](./data/README.md) for source and data-handling notes.
 - [Inventory analysis summary](./results/inventory_analysis_summary.md)
 - [Advanced customer analytics summary](./results/advanced_analytics_summary.md)
 - [Query optimization summary](./results/query_optimization_summary.md)
+- [Views and reusable metrics summary](./results/views_and_reusable_metrics_summary.md)
 
 ## Technology
 

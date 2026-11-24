@@ -3,10 +3,12 @@
 ## Status and Grain
 
 The source is migrated in an order-item-grain normalized model. Order-level
-delivery measures are implemented in `sql/07_delivery_performance.sql`; other
-analytical metric queries remain proposed or planned. Delivery findings use
+delivery measures are implemented in `sql/07_delivery_performance.sql`.
+Sales and profitability metric queries remain subject to unresolved
+aggregation and business-meaning decisions. Delivery findings use
 `public.customer_order` without joining `order_item`, so each order is counted
-once.
+once. Demand, customer-purchasing, and customer demand-concentration metrics
+are implemented and documented in their respective SQL stages.
 
 | Metric | Proposed definition | Grain | Status / caveat |
 |---|---|---|---|
@@ -32,5 +34,20 @@ once.
 | NTILE frequency segment | Relative third of the active-customer population, ordered by distinct order count. | Customer | Implemented in Stage 09 with `customer_id` as a deterministic tie-breaker; equal counts may be split, and segments are not absolute behavioural categories. |
 | Repeat-order customer | Customer with more than one distinct recorded order. | Customer | Implemented in Stage 09; repeat status does not establish loyalty or future retention. |
 | Demand concentration | Share of total observed units accounted for by a ranked customer group. | Customer group | Implemented in Stage 09 as a historical descriptive share, not a predictive or causal measure. |
+
+## Stage 11 Reusable Views
+
+The following regular PostgreSQL views package the established metrics above:
+
+| View | Grain | Metric rules |
+|---|---|---|
+| `vw_delivery_performance_by_mode` | Shipping mode | Order totals, delivery-status counts, missing/canceled status handling, and late-delivery rates based on the Stage 07 denominator rules |
+| `vw_product_demand_abc` | Product | Unit demand, demand contribution, cumulative unit demand, and Stage 08 ABC thresholds of A ≤80%, B >80% through 95%, and C >95%, ordered by units descending and `product_id` ascending |
+| `vw_customer_purchasing_profile` | Customer | Distinct orders, total units, average units per order, latest order date, and days since 2018-01-31 |
+| `vw_customer_repeat_purchase` | Customer | Repeat if more than one distinct order, one-order if exactly one, and no recorded order if zero |
+| `vw_customer_demand_concentration` | Active customer | Units purchased, deterministic rank by units descending and `customer_id` ascending, cumulative units, and cumulative demand percentage |
+
+Stage 11 does not alter business definitions or introduce materialized views,
+indexes, or automatic refresh behavior.
 
 For source profiling and data-quality evidence, see [findings_report.md](./findings_report.md). Related interpretation limits are in [assumptions_and_limitations.md](./assumptions_and_limitations.md).

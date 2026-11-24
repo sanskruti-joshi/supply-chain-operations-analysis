@@ -14,7 +14,7 @@ The analysis asks where delivery outcomes and sales patterns vary across shippin
 - Describe delivery outcomes by shipping mode, destination, and time.
 - Explore sales, discounts, and profitability by product and customer segment after confirming suitable aggregation rules.
 - Develop reusable, clearly defined operational measures.
-- Document a relational model and evaluate query performance as those components are implemented.
+- Document a relational model and evaluate query performance for representative analytical workloads.
 
 ## Business Questions
 
@@ -39,11 +39,14 @@ The analysis asks where delivery outcomes and sales patterns vary across shippin
 
 ## Scope
 
-The current implemented work includes raw-data setup, profiling,
+The implemented SQL work includes raw-data setup, profiling,
 data-quality investigation, a six-table normalized schema, first-load
-migration, and an order-level delivery-performance analysis. Sales,
-inventory, supplier, reusable-view, and optimization analyses remain planned
-until corresponding SQL and validated results are present.
+migration, order-level delivery performance, demand-based inventory analysis,
+advanced customer analytics, query optimization, and five reusable analytical
+views. All 11 SQL scripts are implemented, and Stage 11's five views and six
+validation sections were executed and verified successfully. This description
+establishes SQL completion only; it does not claim that the entire portfolio
+project is complete if non-SQL work remains.
 
 The source contains order, customer, product, geographic, and shipping fields. It does not currently provide supplier identifiers or inventory/replenishment history sufficient to measure supplier performance, stockouts, or inventory risk. Such analysis would require another dataset or an explicitly identified synthetic extension.
 

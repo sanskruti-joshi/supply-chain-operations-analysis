@@ -8,6 +8,7 @@ data-quality checks, the six-table normalized schema and first-load migration,
 the Stage 07 delivery-performance analysis, and the Stage 08 demand-based
 inventory analysis. Stage 09 advanced customer analytics is also implemented.
 Stage 10 query optimization is implemented as a baseline investigation.
+Stage 11 reusable analytical views are implemented as regular PostgreSQL views.
 The sections below distinguish migration verification, profiling, delivery,
 historical product-demand, and customer purchasing findings.
 
@@ -175,6 +176,30 @@ These findings describe recorded customer purchasing activity. NTILE segments
 are relative population groups, and repeat purchasing does not establish
 loyalty or future retention.
 
+## Reusable Analytical Views
+
+The Stage 11 implementation is summarized in
+[views_and_reusable_metrics_summary.md](../results/views_and_reusable_metrics_summary.md).
+The script creates five regular PostgreSQL views:
+
+- `vw_delivery_performance_by_mode`
+- `vw_product_demand_abc`
+- `vw_customer_purchasing_profile`
+- `vw_customer_repeat_purchase`
+- `vw_customer_demand_concentration`
+
+Verified execution results include 4 shipping-mode rows, 118 ABC products,
+20,652 purchasing-profile customers, 11,768 repeat-order customers, and
+20,652 active concentration customers. The ABC view classifies 7 products as
+A, 38 as B, and 73 as C. Its 384,079-unit demand total reconciles to the
+order-item population.
+
+The delivery reconciliation returned 65,752 orders, 36,048 late orders,
+2,855 canceled orders, and 0 missing-status orders. All six validation
+sections passed, and every reported reconciliation and ranking check returned
+`True`. These views preserve the existing Stage 07-09 metric grains and rules;
+they do not add inventory, stock, profitability, or customer-retention data.
+
 ## Interpretation
 
 The checks support treating the source as order-item-grain data and support
@@ -192,13 +217,13 @@ actual inventory levels or supplier/replenishment performance. These findings
 remain descriptive associations and do not establish causation or predictive
 performance.
 
-Metric definitions and their current status are in [metric_definitions.md](./metric_definitions.md). Remaining assumptions and validation work are in [assumptions_and_limitations.md](./assumptions_and_limitations.md).
+Metric definitions and their current status are in [metric_definitions.md](./metric_definitions.md). Unresolved data and domain questions are documented in [assumptions_and_limitations.md](./assumptions_and_limitations.md).
 
 ## Next Work
 
 1. Validate migration evidence against future database snapshots.
 2. Resolve financial measure meanings and aggregation rules before reporting financial KPIs.
 3. Resolve customer geography and excluded source fields only if a supported business entity or requirement is established.
-4. Continue remaining supported sales, reusable-view, and optimization analysis stages.
+4. Resolve sales and profitability aggregation rules before reporting financial KPIs or adding further financial analysis.
 5. Investigate supplier-related analysis only if additional supplier data or relevant identifiers become available.
 6. Add results and recommendations only after relevant queries have been executed and checked.

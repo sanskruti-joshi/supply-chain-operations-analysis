@@ -52,8 +52,14 @@
 - No optimization benefit was measured because no index or query change was
   implemented. The Stage 10 baseline does not establish that future workload
   patterns would retain the same execution strategies.
+- Stage 11 exposes established delivery, demand, and customer metrics as five
+  regular PostgreSQL views. These views do not change source data, are not
+  materialized, and do not include indexes or automatic refresh behavior.
+- Views execute the underlying analytical calculations when queried and inherit
+  the source coverage, date, classification, and ranking limitations of Stages
+  07-09.
 
-## Validation Still Required
+## Future and Unresolved Validation
 
 - Confirm future migration batches with primary-key uniqueness and non-nullness for each implemented entity.
 - Validate foreign-key relationships for every future migration batch.

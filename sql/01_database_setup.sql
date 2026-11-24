@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS staging.dataco_raw (
 );
 
 COMMENT ON TABLE staging.dataco_raw IS
-    'Raw DataCo CSV staging; source fields are retained as text pending profiling. Contains customer-related data; restrict access.';
+    'Raw DataCo CSV staging; source fields are retained as text to preserve their original representation during profiling and migration. Contains customer-related data; restrict access.';
 
 -- Later schema design belongs after import and profiling. Do not add keys or
 -- relationships until row grain and identifier behavior have been verified.
