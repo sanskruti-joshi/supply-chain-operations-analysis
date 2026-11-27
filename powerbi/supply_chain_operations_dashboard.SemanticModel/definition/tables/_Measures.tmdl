@@ -1,0 +1,154 @@
+table _Measures
+	lineageTag: 31108f89-08fb-422c-9b3c-3631bb6811d8
+
+	measure 'Total Orders' =
+			
+			SUM('Delivery Performance'[total_orders])
+		formatString: 0
+		lineageTag: 519728d7-a3b5-4bd8-8f1b-dce64a313b5a
+
+	measure 'Late Orders' =
+			
+			SUM('Delivery Performance'[late_delivery_count])
+		formatString: 0
+		lineageTag: ce300897-2e0b-44a1-bd23-c06a7f681300
+
+	measure 'On-Time Orders' =
+			
+			SUM('Delivery Performance'[on_time_delivery_count])
+		formatString: 0
+		lineageTag: 938999cc-8e2c-4516-bc40-4dc4e9891441
+
+	measure 'Canceled Orders' =
+			
+			SUM('Delivery Performance'[cancelled_delivery_count])
+		formatString: 0
+		lineageTag: 6f69e40f-07fd-40a1-9a71-00bf74336ca7
+
+	measure 'Missing Status Orders' =
+			
+			SUM('Delivery Performance'[missing_status_count])
+		formatString: 0
+		lineageTag: 4f83f5cb-7ff2-4a2f-851e-1aef0602170d
+
+	measure 'Late Delivery Rate' =
+			
+			DIVIDE(
+			    [Late Orders],
+			    [Total Orders] - [Missing Status Orders]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 99b55d22-eeab-4a09-afd2-07271f14a0a1
+
+	measure 'Total Units Demanded' =
+			
+			SUM('Product Demand'[total_units_demanded])
+		formatString: 0
+		lineageTag: 47ab7a43-b5e1-46d4-a434-73997f3c450a
+
+	measure 'Total Products' =
+			
+			DISTINCTCOUNT('Product Demand'[product_id])
+		formatString: 0
+		lineageTag: 122ff2e1-3bce-4d90-98b1-902340f6e823
+
+	measure 'Total Order Items' =
+			
+			SUM('Product Demand'[order_item_count])
+		formatString: 0
+		lineageTag: 4ffc7245-1feb-4923-b0c3-e2618178ebbf
+
+	measure 'A-Class Products' =
+			
+			CALCULATE(
+			    [Total Products],
+			    'Product Demand'[abc_class] = "A"
+			)
+		formatString: 0
+		lineageTag: c75c305f-79df-41d2-88a6-dcaa12e1e029
+
+	measure 'B-Class Products' =
+			
+			CALCULATE(
+			    [Total Products],
+			    'Product Demand'[abc_class] = "B"
+			)
+		formatString: 0
+		lineageTag: 73bcf436-b61b-4b52-9366-14e22eeef6b8
+
+	measure 'C-Class Products' =
+			
+			CALCULATE(
+			    [Total Products],
+			    'Product Demand'[abc_class] = "C"
+			)
+		formatString: 0
+		lineageTag: 4fbedbfa-5640-440b-97bc-4bfd216caa72
+
+	measure 'A-Class Demand Share' =
+			
+			DIVIDE(
+			    [A-Class Products],
+			    [Total Units Demanded]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 98afb9d0-3268-41d2-a54f-b9eea601f91b
+
+	measure 'B-Class Demand Share' =
+			
+			DIVIDE(
+			    [B-Class Products],
+			    [Total Units Demanded]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 89ec78d4-e0e3-4375-8bd0-6448cf28f40e
+
+	measure 'C-Class Demand Share' =
+			
+			DIVIDE(
+			    [C-Class Products],
+			    [Total Units Demanded]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: b0b080c6-6245-48a6-88ad-7963c43940ff
+
+	measure 'Total Customers' =
+			
+			DISTINCTCOUNT('Customer Analytics'[customer_id])
+		formatString: 0
+		lineageTag: ccaefafb-7c13-42c6-9325-c833e5750c72
+
+	measure 'Total Customer Orders' =
+			
+			SUM('Customer Analytics'[distinct_order_count])
+		formatString: 0
+		lineageTag: 08454825-795a-4f79-abfb-fb19a44e98a5
+
+	measure 'Average Units per Customer' =
+			
+			AVERAGE('Customer Analytics'[total_units_purchased])
+		lineageTag: 7fd6f018-703b-4b3d-a559-d3b583eaa30b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Repeat Purchase Customers' =
+			
+			CALCULATE(
+			    [Total Customers],
+			    'Customer Analytics'[purchase_group] = "Repeat-order customer"
+			)
+		formatString: 0
+		lineageTag: 48c5f97d-8056-4dbd-ac3a-eddf630cba00
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlSKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Placeholder = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Placeholder", Int64.Type}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Placeholder"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

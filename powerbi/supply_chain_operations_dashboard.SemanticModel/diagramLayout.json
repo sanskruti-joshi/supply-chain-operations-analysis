@@ -29,14 +29,14 @@
           "nodeIndex": "Delivery Performance",
           "nodeLineageTag": "52dcc9f3-fede-4df8-8e1f-a092317c2b51",
           "size": {
-            "height": 323,
+            "height": 412,
             "width": 234
           },
           "zIndex": 2
         },
         {
           "location": {
-            "x": 534.0497103235316,
+            "x": 530.0497103235316,
             "y": 0
           },
           "nodeIndex": "Product Demand",
@@ -46,10 +46,23 @@
             "width": 234
           },
           "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 796.0497103235316,
+            "y": 0
+          },
+          "nodeIndex": "_Measures",
+          "nodeLineageTag": "31108f89-08fb-422c-9b3c-3631bb6811d8",
+          "size": {
+            "height": 331.5,
+            "width": 234
+          },
+          "zIndex": 4
         }
       ],
       "name": "All tables",
-      "zoomValue": 100,
+      "zoomValue": 91.796469366562832,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,

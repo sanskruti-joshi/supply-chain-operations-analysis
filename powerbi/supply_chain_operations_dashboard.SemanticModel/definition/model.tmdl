@@ -9,7 +9,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
-annotation PBI_QueryOrder = ["Customer Analytics","public vw_customer_demand_concentration","public vw_customer_repeat_purchase","Delivery Performance","Product Demand"]
+annotation PBI_QueryOrder = ["Customer Analytics","public vw_customer_demand_concentration","public vw_customer_repeat_purchase","Delivery Performance","Product Demand","_Measures"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -18,6 +18,7 @@ ref table DateTableTemplate_cab44abc-94af-4e9e-9c63-5e1ccaa16356
 ref table LocalDateTable_90d6969a-2395-429d-ad48-89ebecb15642
 ref table 'Delivery Performance'
 ref table 'Product Demand'
+ref table _Measures
 
 ref cultureInfo en-US
 
