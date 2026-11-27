@@ -1,0 +1,27 @@
+# Normalize text files to LF
+* text=auto
+
+# SQL and documentation
+*.sql text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# Power BI Project text definitions
+*.pbip text eol=lf
+*.pbir text eol=lf
+*.json text eol=lf
+*.tmdl text eol=lf
+*.dax text eol=lf
+*.m text eol=lf
+
+# Power BI binary files
+*.pbix binary
+*.pbit binary
+*.abf binary
+
+# GitHub language detection for Power BI
+*.pbip linguist-language=JSON
+*.pbir linguist-language=JSON
+*.tmdl linguist-language=DAX
+*.dax linguist-language=DAX
+*.m linguist-language=PowerQuery

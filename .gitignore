@@ -25,12 +25,20 @@ data/processed/*
 Thumbs.db
 desktop.ini
 
-#Python artifacts, if Python is added later
-pycache/
-*.py[cod]
-.venv/
-venv/
-
 #Editor-specific local files
 .vscode/*
 !.vscode/extensions.json
+
+Power BI local and generated artifacts
+
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+**/.pbi/tempSaves/
+**/.pbi/logs/
+**/AnalysisServicesWorkspaces/
+**/Cache.abf
+/DataModelSchema
+**/.pbix
+**/.pbit
+**/.tmp
+**/*.bak
