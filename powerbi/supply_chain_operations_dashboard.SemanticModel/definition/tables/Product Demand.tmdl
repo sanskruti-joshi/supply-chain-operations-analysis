@@ -1,0 +1,88 @@
+table 'Product Demand'
+	lineageTag: 7fbc4a29-e9b7-4784-aa30-ddbc4008ef2c
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: aa53fae1-5125-48e1-98cf-342ec469621c
+		summarizeBy: sum
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		lineageTag: 5e3577ee-51d3-42a4-9fcd-8536b2f47106
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 09072a98-a622-4e8d-a54b-3673d88841d3
+		summarizeBy: sum
+		sourceColumn: order_item_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_units_demanded
+		dataType: int64
+		formatString: 0
+		lineageTag: bdc720bb-6c7b-4999-b3de-fd0d9c02d60e
+		summarizeBy: sum
+		sourceColumn: total_units_demanded
+
+		annotation SummarizationSetBy = Automatic
+
+	column demand_contribution_pct
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c5fc9ff9-fe50-4a34-ba50-980c05ba4931
+		summarizeBy: sum
+		sourceColumn: demand_contribution_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column cumulative_demand_pct
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 86f77a6a-1e4b-4c00-b27c-28722e7d59c5
+		summarizeBy: sum
+		sourceColumn: cumulative_demand_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column cumulative_units
+		dataType: int64
+		lineageTag: 916ad051-f5ce-4f9c-96ed-b616b898039a
+		summarizeBy: sum
+		sourceColumn: cumulative_units
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column abc_class
+		dataType: string
+		lineageTag: bb4610a8-f7d9-4f51-9cbb-96c87d5062f1
+		summarizeBy: none
+		sourceColumn: abc_class
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Product Demand' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "supply_chain_analytics"),
+				    public_vw_product_demand_abc = Source{[Schema="public",Item="vw_product_demand_abc"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(public_vw_product_demand_abc,{{"cumulative_units", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

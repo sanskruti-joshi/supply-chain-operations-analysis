@@ -1,0 +1,5 @@
+relationship cb47f550-c906-4fea-aa8b-1b2af32773a0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Customer Analytics'.most_recent_order_date
+	toColumn: LocalDateTable_90d6969a-2395-429d-ad48-89ebecb15642.Date
+

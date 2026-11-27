@@ -1,0 +1,120 @@
+table 'Customer Analytics'
+	lineageTag: a4da17af-9f76-4954-8b24-051f62d1f1f2
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: a3db6e19-23ce-40f1-ab8f-64e4f64a170a
+		summarizeBy: sum
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column distinct_order_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 9dd769c2-0037-455a-9a38-2027a4c4af36
+		summarizeBy: sum
+		sourceColumn: distinct_order_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_units_purchased
+		dataType: int64
+		formatString: 0
+		lineageTag: 83bbd9b1-bde8-45f8-a23b-4b261e7697c6
+		summarizeBy: sum
+		sourceColumn: total_units_purchased
+
+		annotation SummarizationSetBy = Automatic
+
+	column average_units_per_order
+		dataType: double
+		lineageTag: c407fc5b-def7-4c42-bb4b-be0b40b75dd1
+		summarizeBy: sum
+		sourceColumn: average_units_per_order
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column most_recent_order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6dd66fe9-77f7-4e01-9ab1-7b532569e675
+		summarizeBy: none
+		sourceColumn: most_recent_order_date
+
+		variation Variation
+			isDefault
+			relationship: cb47f550-c906-4fea-aa8b-1b2af32773a0
+			defaultHierarchy: LocalDateTable_90d6969a-2395-429d-ad48-89ebecb15642.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column days_since_last_recorded_order
+		dataType: int64
+		formatString: 0
+		lineageTag: 8f6dbbd9-d9b1-4b5e-98cb-a1c6b05a57df
+		summarizeBy: sum
+		sourceColumn: days_since_last_recorded_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column purchase_group
+		dataType: string
+		lineageTag: 54410ea5-ab07-4910-8338-064b5b55ef0a
+		summarizeBy: none
+		sourceColumn: purchase_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_rank
+		dataType: int64
+		formatString: 0
+		lineageTag: beea2df3-7f02-41ba-9487-92e5bba56a15
+		summarizeBy: sum
+		sourceColumn: customer_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	column cumulative_units
+		dataType: int64
+		lineageTag: bfd3d6e7-963e-4d5f-8f21-843c185886c6
+		summarizeBy: sum
+		sourceColumn: cumulative_units
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cumulative_demand_pct
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 21aa564e-7a9c-4c93-adf4-789c5e7a2a2e
+		summarizeBy: sum
+		sourceColumn: cumulative_demand_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Customer Analytics' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "supply_chain_analytics"),
+				    public_vw_customer_purchasing_profile = Source{[Schema="public",Item="vw_customer_purchasing_profile"]}[Data],
+				    #"Merged Queries" = Table.NestedJoin(public_vw_customer_purchasing_profile, {"customer_id"}, #"public vw_customer_repeat_purchase", {"customer_id"}, "public vw_customer_repeat_purchase", JoinKind.LeftOuter),
+				    #"Expanded public vw_customer_repeat_purchase" = Table.ExpandTableColumn(#"Merged Queries", "public vw_customer_repeat_purchase", {"purchase_group"}, {"public vw_customer_repeat_purchase.purchase_group"}),
+				    #"Merged Queries1" = Table.NestedJoin(#"Expanded public vw_customer_repeat_purchase", {"customer_id"}, #"public vw_customer_demand_concentration", {"customer_id"}, "public vw_customer_demand_concentration", JoinKind.LeftOuter),
+				    #"Expanded public vw_customer_demand_concentration" = Table.ExpandTableColumn(#"Merged Queries1", "public vw_customer_demand_concentration", {"customer_rank", "cumulative_units", "cumulative_demand_pct"}, {"public vw_customer_demand_concentration.customer_rank", "public vw_customer_demand_concentration.cumulative_units", "public vw_customer_demand_concentration.cumulative_demand_pct"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Expanded public vw_customer_demand_concentration",{{"public vw_customer_repeat_purchase.purchase_group", "purchase_group"}, {"public vw_customer_demand_concentration.customer_rank", "customer_rank"}, {"public vw_customer_demand_concentration.cumulative_units", "cumulative_units"}, {"public vw_customer_demand_concentration.cumulative_demand_pct", "cumulative_demand_pct"}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns",{{"cumulative_units", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,128 @@
+table 'Delivery Performance'
+	lineageTag: 52dcc9f3-fede-4df8-8e1f-a092317c2b51
+
+	column shipping_mode
+		dataType: string
+		lineageTag: 51880b02-3e27-4a1e-9864-7abef2305c9d
+		summarizeBy: none
+		sourceColumn: shipping_mode
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: be65ddfd-686d-4669-a532-2215947fb069
+		summarizeBy: sum
+		sourceColumn: total_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column late_delivery_count
+		dataType: int64
+		formatString: 0
+		lineageTag: be9af319-bd74-45bb-a727-912f4b9aa93f
+		summarizeBy: sum
+		sourceColumn: late_delivery_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column advance_shipping_count
+		dataType: int64
+		formatString: 0
+		lineageTag: de3e1a8f-202c-4f2f-99e7-6a9b6ec5857e
+		summarizeBy: sum
+		sourceColumn: advance_shipping_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column on_time_delivery_count
+		dataType: int64
+		formatString: 0
+		lineageTag: b6de119d-e3d6-4a90-b95e-db9e4676254c
+		summarizeBy: sum
+		sourceColumn: on_time_delivery_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column cancelled_delivery_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 7fa8d098-d067-4d2f-a608-f302b070ed1f
+		summarizeBy: sum
+		sourceColumn: cancelled_delivery_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column missing_status_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 5e164635-35b2-4279-ab07-6a104a8dcf76
+		summarizeBy: sum
+		sourceColumn: missing_status_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column late_delivery_pct_excluding_missing_status
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 3cf5f6bf-d8e6-433b-a71e-4c83f0a8c595
+		summarizeBy: sum
+		sourceColumn: late_delivery_pct_excluding_missing_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column late_delivery_pct_of_all_orders
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 39cfa734-d289-4b48-8e37-453dfabdebc4
+		summarizeBy: sum
+		sourceColumn: late_delivery_pct_of_all_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column advance_shipping_pct
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 2ca7666d-9b69-4d79-a6c7-e4b52ef1fb52
+		summarizeBy: sum
+		sourceColumn: advance_shipping_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column on_time_delivery_pct
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: b668001c-0dae-47b4-bcf5-70e7651f4aaf
+		summarizeBy: sum
+		sourceColumn: on_time_delivery_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column cancelled_delivery_pct
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f5f0e1ff-ac13-4f58-a2fb-118510e0a247
+		summarizeBy: sum
+		sourceColumn: cancelled_delivery_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column missing_status_pct
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 2dc27a6e-6c68-404d-9b5d-819c18b5da39
+		summarizeBy: sum
+		sourceColumn: missing_status_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Delivery Performance' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "supply_chain_analytics"),
+				    public_vw_delivery_performance_by_mode = Source{[Schema="public",Item="vw_delivery_performance_by_mode"]}[Data]
+				in
+				    public_vw_delivery_performance_by_mode
+

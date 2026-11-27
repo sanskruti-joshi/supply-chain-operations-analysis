@@ -1,0 +1,8 @@
+{
+  "version": "4.0",
+  "datasetReference": {
+    "byPath": {
+      "path": "../supply_chain_operations_dashboard.SemanticModel"
+    }
+  }
+}

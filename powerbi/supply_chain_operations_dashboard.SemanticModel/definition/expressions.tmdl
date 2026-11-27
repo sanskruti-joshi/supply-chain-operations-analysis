@@ -1,0 +1,24 @@
+expression 'public vw_customer_demand_concentration' =
+		let
+		    Source = PostgreSQL.Database("localhost:5432", "supply_chain_analytics"),
+		    public_vw_customer_demand_concentration = Source{[Schema="public",Item="vw_customer_demand_concentration"]}[Data]
+		in
+		    public_vw_customer_demand_concentration
+	lineageTag: 757fb31b-d3dd-4996-88d8-56470b3ae7c5
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression 'public vw_customer_repeat_purchase' =
+		let
+		    Source = PostgreSQL.Database("localhost:5432", "supply_chain_analytics"),
+		    public_vw_customer_repeat_purchase = Source{[Schema="public",Item="vw_customer_repeat_purchase"]}[Data]
+		in
+		    public_vw_customer_repeat_purchase
+	lineageTag: 54722069-ba50-4379-87fd-394cc9f80ead
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
